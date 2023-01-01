@@ -40,7 +40,8 @@ const headCells = [
 ]
 
 function TableHead(props) {
-  const { order = 'name', orderBy = 'asc', onRequestSort } = props
+  const { order = 'asc', orderBy = 'name', onRequestSort } = props
+
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
   }

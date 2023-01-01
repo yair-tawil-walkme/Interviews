@@ -4,7 +4,7 @@ import Table from './Table'
 import { getUsers } from '../db/users'
 
 const App = () => {
-  const [rows, setRows] = useState(getUsers())
+  const [rows] = useState(getUsers())
 
   return (
     <div>
