@@ -1,14 +1,14 @@
-const timeoutPromise = (timeout) => new Promise((resolve) => {
+const createPromise = (timeout) => new Promise((resolve) => {
     setTimeout(() => {
         console.log(`done after ${timeout / 1000}s`)
         resolve(timeout)
     }, timeout)
 });
 
-const promise1 = () => timeoutPromise(4000);
-const promise2 = () => timeoutPromise(3000);
-const promise3 = () => timeoutPromise(2000);
-const promise4 = () => timeoutPromise(1000);
+const promise1 = () => createPromise(4000);
+const promise2 = () => createPromise(3000);
+const promise3 = () => createPromise(2000);
+const promise4 = () => createPromise(1000);
 
 async function _logPromiseDuration(promise) {
     const now = Date.now();
