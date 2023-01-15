@@ -22,16 +22,32 @@ function promiseAll(promises) {
     return Promise.all(promises)
 }
 
-function MyPromiseAll(promises) {
+async function MyPromiseAll(promises) {
+    const arr = []
 
+    await new Promise(async(resolve, reject) => {
+        let counter = 0
+        for(let i=0; i< promises.length; i++) {
+            promises[i]().then((res) => {
+                counter++;
+                arr[i] = res;
+                if(counter === promises.length) {
+                    resolve()
+                }
+            });
+        }
+    })
+
+
+    return arr;
 }
 
 async function run() {
     // comment
-    await _logPromiseDuration(promiseAll([promise1(), promise2(), promise3(), promise4()]).then((value) => console.log(value)))
+    // await _logPromiseDuration(promiseAll([promise1, promise2, promise3(), promise4()]).then((value) => console.log(value)))
 
     // uncomment
-    // await logPromiseDuration(MyPromiseAll([promise1(), promise2(), promise3(), promise4()]).then((value) => console.log(value)))
+    await _logPromiseDuration(MyPromiseAll([promise1, promise2, promise3, promise4]).then((value) => console.log(value)))
 }
 
 run();

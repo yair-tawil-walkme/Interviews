@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import * as React from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -132,14 +133,21 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+
+export default function Table({ rows, setSort, checked, setChecked }) {
+  const [allSelected, setAllSelected] = useState(false);
+
   const handleRequestSort = (event, property) => {
-    console.log('property?', property)
+    setSort((prev) => (prev + 1) % 3);
   }
 
-  const handleSelectAllClick = (event) => {}
+  const handleSelectAllClick = (event) => {
+    setAllSelected((prevState => !prevState))
+  }
 
-  const handleClick = (event, name) => {}
+  const handleClick = (event, name) => {
+    setChecked((prev) => ({ ...prev, [name] : !prev[name]}))
+  }
 
   const isSelected = (name) => false
 
