@@ -1,25 +1,36 @@
-const createPromise = (timeout) => new Promise((resolve) => {
+const createPromiseCallback = (timeout) => new Promise((resolve) => {
     setTimeout(() => {
-        console.log(`done after ${timeout / 1000}s`)
-        resolve(timeout)
+        resolve({ value: timeout, duration: `${timeout / 1000} sec` })
     }, timeout)
 });
 
-const promise1 = () => createPromise(4000);
-const promise2 = () => createPromise(3000);
-const promise3 = () => createPromise(2000);
-const promise4 = () => createPromise(1000);
+const promiseCallback1 = () => createPromiseCallback(3000);
+const promiseCallback2 = () => createPromiseCallback(4000);
+const promiseCallback3 = () => createPromiseCallback(2000);
+const promiseCallback4 = () => createPromiseCallback(1000);
 
 async function _logPromiseDuration(promise) {
+    let dots = '..'
+
+    const interval = setInterval((int) => {
+        dots += '.'
+        process.stdout.write(`Awaiting ${dots}\r`);
+    }, 1000);
+
     const now = Date.now();
 
-    await promise
+    const value = await promise
 
-    console.log(`promise duration:`, Date.now() - now)
+    const  duration = Math.floor((Date.now() - now) / 1000);
+
+    clearInterval(interval);
+
+    console.table(value)
+    console.table([{ value: 'Promise all', duration: `${duration} sec` }])
 }
 
 function promiseAll(promises) {
-    return Promise.all(promises)
+    return Promise.all(promises.map((promiseCallback) => promiseCallback()))
 }
 
 function MyPromiseAll(promises) {
@@ -28,10 +39,10 @@ function MyPromiseAll(promises) {
 
 async function run() {
     // comment
-    await _logPromiseDuration(promiseAll([promise1(), promise2(), promise3(), promise4()]).then((value) => console.log(value)))
+    await _logPromiseDuration(promiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 
     // uncomment
-    // await logPromiseDuration(MyPromiseAll([promise1(), promise2(), promise3(), promise4()]).then((value) => console.log(value)))
+    // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();
