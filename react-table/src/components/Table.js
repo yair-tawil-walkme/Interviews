@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useState, useEffect } from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
@@ -40,9 +41,12 @@ const headCells = [
 ]
 
 function TableHead(props) {
-  const { order = 'asc', orderBy = 'name', onRequestSort } = props
+  const { order, orderBy, onRequestSort } = props
 
   const createSortHandler = (property) => (event) => {
+    console.log(property)
+    console.log(event)
+
     onRequestSort(event, property)
   }
 
@@ -133,15 +137,45 @@ function TableToolbar(props) {
 }
 
 export default function Table({ rows }) {
+  const [data, setData] = useState(rows);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('name');
+
   const handleRequestSort = (event, property) => {
     console.log('property?', property)
+    if (order === 'asc') {
+      setOrderBy(property);
+      setOrder('desc');
+      setData(sortData())
+    } else if (order === 'desc') {
+      setOrder();
+      setOrderBy();
+      setData(sortData())
+    } else {
+      setOrderBy(property);
+      setOrder('asc');
+      setData(sortData())
+    }
+
   }
 
-  const handleSelectAllClick = (event) => {}
+  const sortData = () => {
+   if(!orderBy) return data;
+    const sortedData = data.sort((a,b) => {
+return a[orderBy] > b[orderBy] ? 1 : -1;
+    });
+    return order === 'desc' ? sortedData.reverse() : sortedData;
+  }
 
-  const handleClick = (event, name) => {}
+  const handleSelectAllClick = (event) => { }
 
-  const isSelected = (name) => false
+  const handleClick = (event, name) => { }
+
+  const isSelected = (name) => false;
+
+  useEffect(() => {
+    setData(rows);
+  }, [rows]);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -152,14 +186,14 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={data.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {data.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
