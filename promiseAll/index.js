@@ -1,18 +1,18 @@
-const createPromiseCallback = (timeout) => new Promise((resolve) => {
+const createPromiseCallback = (value, timeout) => new Promise((resolve) => {
     setTimeout(() => {
-        resolve({ value: timeout, duration: `${timeout / 1000} sec` })
+        resolve({ value, duration: `${timeout / 1000} sec` })
     }, timeout)
 });
 
-const promiseCallback1 = () => createPromiseCallback(3000);
-const promiseCallback2 = () => createPromiseCallback(4000);
-const promiseCallback3 = () => createPromiseCallback(2000);
-const promiseCallback4 = () => createPromiseCallback(1000);
+const promiseCallback1 = () => createPromiseCallback(1, 3000);
+const promiseCallback2 = () => createPromiseCallback(2, 4000);
+const promiseCallback3 = () => createPromiseCallback(3, 2000);
+const promiseCallback4 = () => createPromiseCallback(4, 1000);
 
 async function _logPromiseDuration(promise) {
     let dots = '..'
 
-    const interval = setInterval((int) => {
+    const interval = setInterval(() => {
         dots += '.'
         process.stdout.write(`Awaiting ${dots}\r`);
     }, 1000);
