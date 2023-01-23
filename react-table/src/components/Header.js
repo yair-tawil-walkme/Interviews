@@ -49,7 +49,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-export default function Header() {
+export default function Header({ handleSearchTable }) {
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -68,7 +70,7 @@ export default function Header() {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase placeholder="Search…" onChange={(e) => handleSearchTable(e.target.value)}/>
           </Search>
         </Toolbar>
       </AppBar>

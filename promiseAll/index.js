@@ -34,7 +34,19 @@ function promiseAll(promises) {
 }
 
 function MyPromiseAll(promises) {
-
+    return new Promise((resolve, reject) => {
+        let counter = 0;
+        let results = [];
+        promises.forEach((promise, index) => {
+            promise.then(result => {
+                counter++;
+                results[index] = result
+                if (counter === promises.length) {
+                    resolve(results)
+                }
+            }).catch(reject)
+        })
+    })
 }
 
 async function run() {
