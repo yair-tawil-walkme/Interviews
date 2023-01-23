@@ -20,11 +20,7 @@ async function _logPromiseDuration(promise) {
 }
 
 function sleep(timeout) {
-    return new Promise((resolve) => {
-     setTimeout(() => {
-         resolve()
-     }, timeout)
-    })
+    return new Promise(resolve => setTimeout(resolve, timeout))
 }
 
 async function run() {

@@ -17,6 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
+import { useState } from 'react';
 
 const headCells = [
   {
@@ -132,16 +133,42 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+export default function Table({ rows, setTableRows }) {
+
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('name');
+
   const handleRequestSort = (event, property) => {
-    console.log('property?', property)
+    setOrderBy(property)
+
+    if (order === 'asc') {
+      setOrder('desc')
+    } else {
+      setOrder('asc')
+    }
+      const sortedRows = [...rows].sort((a,b) => {
+        const nameA = a[property].toLowerCase()
+        const nameB = b[property].toLowerCase();
+        if (nameA < nameB) {
+          return order === 'asc' ?  -1 :  1
+        }
+        if (nameA > nameB) {
+          return order === 'asc' ? 1 : -1
+        }
+        return 0
+      });
+
+      setTableRows(sortedRows);
   }
 
-  const handleSelectAllClick = (event) => {}
+  const handleSelectAllClick = (event) => {
+  }
 
-  const handleClick = (event, name) => {}
+  const handleClick = (event, name) => {
+  }
 
-  const isSelected = (name) => false
+  const isSelected = (name) => {
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -152,8 +179,8 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
