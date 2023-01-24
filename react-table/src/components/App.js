@@ -5,11 +5,16 @@ import { getUsers } from '../db/users'
 
 const App = () => {
   const [rows] = useState(getUsers())
+  const [filterString, setFilterString] = useState('')
+
+  function handleFilterInput(e) {
+    setFilterString(e.target.value.toLowerCase())
+  }
 
   return (
     <div>
-      <Header />
-      <Table rows={rows} />
+      <Header handleFilterInput={handleFilterInput} />
+      <Table rows={rows} filterString={filterString} />
     </div>
   )
 }

@@ -132,9 +132,34 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+export default function Table({ rows, filterString }) {
+  const [sort, setSort] = React.useState({ sortBy: 'name', order: 'asc' })
+
   const handleRequestSort = (event, property) => {
     console.log('property?', property)
+    if (property === sort.sortBy)
+      setSort({
+        sortBy: property,
+        order: sort.order === 'asc' ? 'desc' : 'asc',
+      })
+    else setSort({ sortBy: property, order: 'asc' })
+  }
+
+  const displayRows = () => {
+    return rows
+      .filter((row) => {
+        if (filterString === '') return true
+        return (
+          row.name.toLowerCase().includes(filterString) ||
+          row.email.toLowerCase().includes(filterString)
+        )
+      })
+      .sort((userA, userB) => {
+        let order = sort.order === 'asc' ? +1 : -1
+        if (userA[sort.sortBy] === userB[sort.sortBy]) return 0
+        if (userA[sort.sortBy] > userB[sort.sortBy]) return order
+        else return -order
+      })
   }
 
   const handleSelectAllClick = (event) => {}
@@ -152,14 +177,14 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={sort.order}
+              orderBy={sort.sortBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={displayRows().length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {displayRows().map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
