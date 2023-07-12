@@ -17,6 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
+import { useTableSelection } from '../hooks/useTableSelection'
 
 const headCells = [
   {
@@ -40,7 +41,7 @@ const headCells = [
 ]
 
 function TableHead(props) {
-  const { order = 'asc', orderBy = 'name', onRequestSort } = props
+  const { order = 'asc', orderBy = 'name', onRequestSort, onSelectAllClick, rowCount, numSelected } = props
 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
@@ -50,7 +51,7 @@ function TableHead(props) {
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox color="primary" onChange={onSelectAllClick} checked={rowCount === numSelected} />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -79,7 +80,7 @@ function TableHead(props) {
 }
 
 function TableToolbar(props) {
-  const { numSelected } = props
+  const { numSelected, handleDeleteRows } = props
 
   return (
     <Toolbar
@@ -117,7 +118,7 @@ function TableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDeleteRows}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -132,47 +133,57 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+export default function Table({ rows, order, orderBy, handleSort, handleDeleteRows }) {
+  const { handleSelectAll, handleSelectItem, selections } = useTableSelection(rows);
   const handleRequestSort = (event, property) => {
     console.log('property?', property)
+    handleSort(property);
   }
 
-  const handleSelectAllClick = (event) => {}
+  const handleSelectAllClick = () => {
+    const ids = rows.map(({ id }) => id);
+    console.log("IDS", ids)
+    handleSelectAll(ids);
+  }
 
-  const handleClick = (event, name) => {}
+  const handleClick = (event, selectedId) => {
+    handleSelectItem(selectedId)
+  }
 
-  const isSelected = (name) => false
+  const isSelected = (id) => selections.includes(id);
+
+  const numSelected = selections.length;
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar numSelected={0} />
+        <TableToolbar numSelected={numSelected} handleDeleteRows={() => handleDeleteRows(selections)} />
 
         <TableContainer>
           <MuiTable>
             <TableHead
-              numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              numSelected={numSelected}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
               {rows.map((row) => {
-                const isItemSelected = isSelected(row.name)
+                const isItemSelected = isSelected(row.id)
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.name}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox color="primary" />
+                      <Checkbox color="primary" checked={isItemSelected} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       {row.name}
