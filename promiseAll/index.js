@@ -33,8 +33,22 @@ function promiseAll(promises) {
     return Promise.all(promises.map((promiseCallback) => promiseCallback()))
 }
 
-function MyPromiseAll(promises) {
+async function MyPromiseAll(promises) {
+    return new Promise((res) => {
+        const results = [];
+        let currentIndex = 0;
 
+        for (let i = 0; i < promises.length; i++) {
+            promises[i]().then((item) => {
+                results[i] = item;
+                currentIndex += 1;
+
+                if (currentIndex === promises.length) {
+                    res(results);
+                }
+            })
+        }
+    });
 }
 
 async function run() {

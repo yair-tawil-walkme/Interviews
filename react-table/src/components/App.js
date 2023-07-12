@@ -12,7 +12,7 @@ const App = () => {
 
   return (
     <div>
-      <Header handleSearch={handleSearch} />
+      <Header handleSearch={handleSearch} search={filtersData.search} />
       <Table
         rows={filteredRows}
         order={filtersData.order}
