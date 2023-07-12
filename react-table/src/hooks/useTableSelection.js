@@ -12,7 +12,6 @@ export const useTableSelection = (rows) => {
             if (JSON.stringify(prev.sort()) === JSON.stringify(ids.sort())) {
                 return [];
             }
-            console.log(ids);
             return ids;
         });
     }

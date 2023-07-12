@@ -142,7 +142,6 @@ export default function Table({ rows, order, orderBy, handleSort, handleDeleteRo
 
   const handleSelectAllClick = () => {
     const ids = rows.map(({ id }) => id);
-    console.log("IDS", ids)
     handleSelectAll(ids);
   }
 
