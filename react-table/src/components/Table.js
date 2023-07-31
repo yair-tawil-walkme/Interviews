@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState} from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
@@ -40,17 +40,23 @@ const headCells = [
 ]
 
 function TableHead(props) {
-  const { order = 'asc', orderBy = 'name', onRequestSort } = props
+  const { order = 'asc', orderBy = 'name', onRequestSort, onSelectAllClick} = props
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
+  }
+
+  const selectAllClickHandler = ()=>{
+    setSelectAllChecked(!selectAllChecked);
+    onSelectAllClick();
   }
 
   return (
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox color="primary" onClick={selectAllClickHandler} checked={selectAllChecked}/>
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -132,14 +138,52 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
-  const handleRequestSort = (event, property) => {
-    console.log('property?', property)
+export default function Table({ rows, searchText }) {
+  const [orderBy, setOrderBy] = useState("");
+  const [order, setOrder] = useState("");  
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const sortOrder = (a,b)=>{
+    const aValue = a[orderBy];
+    const bValue = b[orderBy];
+
+    if (aValue === undefined) return 1;
+    if (bValue === undefined) return -1;
+
+    if (order === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
   }
 
-  const handleSelectAllClick = (event) => {}
+  const handleRequestSort = (event, property) => {
+    console.log('property?', property)
+    const updateOrder = order === "asc" && property === orderBy ? "desc" : "asc";
+    setOrderBy(property);
+    setOrder(updateOrder);
+  }
 
-  const handleClick = (event, name) => {}
+  const handleSelectAllClick = (event) => {
+    if(selectAll === true){
+      setSelectAll(false);
+      setSelectedRows([]);
+    }else{
+      setSelectAll(true);
+      setSelectedRows(rows.map(row=>row.id));
+    }
+  }
+
+  const handleClick = (event, id) => {
+    let updateSelected;
+    if(selectedRows.includes(id)){
+      updateSelected = selectedRows.filter((ID) => ID !== id)
+    }else{
+      updateSelected = [...selectedRows, id];
+    }
+    setSelectedRows(updateSelected);
+  }
 
   const isSelected = (name) => false
 
@@ -152,27 +196,29 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {rows.filter(row=>row.name.toLowerCase().startsWith(searchText) || row.email.toLowerCase().startsWith(searchText))
+              .sort(sortOrder)
+              .map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.name}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox color="primary" />
+                      <Checkbox color="primary" checked={selectedRows.includes(row.id)}/>
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       {row.name}

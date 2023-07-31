@@ -5,11 +5,16 @@ import { getUsers } from '../db/users'
 
 const App = () => {
   const [rows] = useState(getUsers())
+  const [searchText, setSearchText] = useState("");
+
+  const onSearch = (searchText)=>{
+    setSearchText(searchText);
+  }
 
   return (
     <div>
-      <Header />
-      <Table rows={rows} />
+      <Header onSearch={onSearch}/>
+      <Table rows={rows} searchText={searchText}/>
     </div>
   )
 }
