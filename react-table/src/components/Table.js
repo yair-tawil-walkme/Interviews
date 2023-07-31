@@ -132,9 +132,13 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+export default function Table({ rows, search, sort, updateSort }) {
   const handleRequestSort = (event, property) => {
-    console.log('property?', property)
+    if (sort.property === property && sort.direction === 'asc') {
+      updateSort({ property, direction: 'desc' })
+    } else {
+      updateSort({ property, direction: 'asc' })
+    }
   }
 
   const handleSelectAllClick = (event) => {}
@@ -142,6 +146,17 @@ export default function Table({ rows }) {
   const handleClick = (event, name) => {}
 
   const isSelected = (name) => false
+
+  const sorter = (a, b) => {
+    const firstElement = String(a[sort.property]).toUpperCase();
+    const secondElement = String(b[sort.property]).toUpperCase();
+    return sort.direction === 'asc' ? firstElement.localeCompare(secondElement) : secondElement.localeCompare(firstElement)
+  }
+
+  const filterer = row => {
+    if (row.name.toUpperCase().includes(search.toUpperCase()) || row.email.toUpperCase().includes(search.toUpperCase())) return true
+    return false
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -152,14 +167,16 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={sort.direction}
+              orderBy={sort.property}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {rows.filter(filterer)
+              .sort(sorter)
+              .map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (

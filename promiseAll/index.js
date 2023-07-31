@@ -34,15 +34,29 @@ function promiseAll(promises) {
 }
 
 function MyPromiseAll(promises) {
-
+    return new Promise((resolve, reject) => {
+        let counter = 0;
+        let resultArray = []
+        promises.map(((promise, index) => {
+            promise().then(result => {
+                resultArray[index] = result
+                counter += 1
+                if (counter === promises.length) {
+                    resolve(resultArray)
+                }
+            }).catch(e => {
+                reject(e)
+            })
+        }))
+    })
 }
 
 async function run() {
     // comment
-    await _logPromiseDuration(promiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
+    // await _logPromiseDuration(promiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 
     // uncomment
-    // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
+    await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();
