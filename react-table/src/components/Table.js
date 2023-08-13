@@ -17,6 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { visuallyHidden } from '@mui/utils'
+import { useState, useMemo } from 'react'
 
 const headCells = [
   {
@@ -132,9 +133,40 @@ function TableToolbar(props) {
   )
 }
 
-export default function Table({ rows }) {
+const orderedList = (filteredList, orderBy, order) => {
+  if (orderBy === 'age') {
+    return filteredList.sort((a, b) =>
+       
+      order === 'asc' ? a.age <= b.age : a.age > b.age
+    )
+  } else if (orderBy === 'name' || orderBy === 'email') {
+    return filteredList.sort(function (a, b) {
+      return a[orderBy].toLowerCase().localeCompare(b[orderBy].toLowerCase());
+  });
+  } else {
+    return filteredList
+  }
+}
+
+export default function Table({ rows ,searchValue }) {
+  const [orderBy, setOrderBy] = useState('')
+  const [order, setOrder] = useState('asc')
+  const filteredList = useMemo(() => {
+    const filtered = rows.filter(row => {
+      const rowName = row.name
+      const rowEmail = row.email
+      const lowerCaseSearchValue = searchValue.toLowerCase()
+
+      return  (rowName.toLowerCase().includes(lowerCaseSearchValue) || 
+          rowEmail.toLowerCase().includes(lowerCaseSearchValue)) 
+      })
+    return orderedList(filtered, orderBy, order)
+}, [searchValue, rows, orderBy, order])
+
   const handleRequestSort = (event, property) => {
     console.log('property?', property)
+    setOrder(prev => prev === 'desc' || orderBy !== property ? 'asc' : 'desc')
+    setOrderBy(property)
   }
 
   const handleSelectAllClick = (event) => {}
@@ -152,14 +184,14 @@ export default function Table({ rows }) {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {filteredList.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (

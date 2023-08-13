@@ -5,11 +5,16 @@ import { getUsers } from '../db/users'
 
 const App = () => {
   const [rows] = useState(getUsers())
+  const [searchValue, setSearchValue] = useState('')
+
+  const onChangeSearchBar = (e) => {
+    setSearchValue(e.target.value)
+  }
 
   return (
     <div>
-      <Header />
-      <Table rows={rows} />
+      <Header searchValue={searchValue} onChange={onChangeSearchBar}/>
+      <Table rows={rows} searchValue={searchValue}/>
     </div>
   )
 }
