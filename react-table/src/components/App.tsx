@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Header from './Header'
-import Table from './Table'
-import { getUsers } from '../db/users'
+import Table from './Table/Table'
+import { getRows } from '../db/rows'
 
 const App = () => {
-  const [rows] = useState(getUsers())
+  const [rows] = useState(getRows())
 
   return (
     <div>

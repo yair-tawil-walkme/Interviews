@@ -1,0 +1,96 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "es6": true
+  },
+  "extends": [
+    "airbnb",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:react/jsx-runtime",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "plugin:cypress/recommended",
+    "plugin:playwright/playwright-test"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "cypress", "prettier"],
+  "rules": {
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-parameter-properties": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "prettier/prettier": ["warn", { "singleQuote": true }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "no-console": "off",
+    "func-names": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "mjs": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "react/no-danger": "off",
+    "react/require-default-props": "off",
+    "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
+    "consistent-return": "off",
+    "default-param-last": 0,
+    "no-shadow": "off",
+    "arrow-body-style": "off",
+    "import/order": "off",
+    "no-param-reassign": 0,
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/button-has-type": "off",
+    "no-underscore-dangle": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "react/prop-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react/destructuring-assignment": "off",
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "@walkme/ui-icons",
+          "@walkme/ui-styles",
+          "@walkme/ui-core"
+        ]
+      }
+    ],
+    "no-nested-ternary": "off",
+    "import/no-cycle": "off"
+  }
+}
