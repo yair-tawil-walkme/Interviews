@@ -48,7 +48,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+type HeaderProps = {
+  handleTyping: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
+}
+
+const Header = (props: HeaderProps): JSX.Element => {
+  const { handleTyping } = props
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +75,7 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase onChange={handleTyping} placeholder="Search…" />
           </Search>
         </Toolbar>
       </AppBar>

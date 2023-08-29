@@ -2,7 +2,7 @@ type PromiseCallback = { value: number; duration: string };
 
 const createPromiseCallback = (
   value: number,
-  timeout: number,
+  timeout: number
 ): Promise<PromiseCallback> =>
   new Promise((resolve) => {
     setTimeout(() => {
@@ -39,21 +39,51 @@ function promiseAll(promises: Array<() => Promise<PromiseCallback>>) {
   return Promise.all(promises.map((promiseCallback) => promiseCallback()));
 }
 
-function MyPromiseAll(promises: Array<() => Promise<PromiseCallback>>) {}
+function MyPromiseAll(promises: Array<() => Promise<PromiseCallback>>) {
+  return new Promise((resolve, reject) => {
+    if (promises.length) {
+      resolve([]);
+    }
+
+    const completed: PromiseCallback[] = [];
+    let count = 0;
+    for (let i = 0; i < promises.length; i++) {
+      const current = promises[i];
+      current()
+        .then((res): void => {
+          count += 1;
+          completed[i] = res;
+          if (count === promises.length) {
+            resolve(completed);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    }
+  });
+}
 
 async function run() {
   // comment
+  // await _logPromiseDuration(
+  //   promiseAll([
+  //     promiseCallback1,
+  //     promiseCallback2,
+  //     promiseCallback3,
+  //     promiseCallback4,
+  //   ]),
+  // );
+
+  // uncomment
   await _logPromiseDuration(
-    promiseAll([
+    MyPromiseAll([
       promiseCallback1,
       promiseCallback2,
       promiseCallback3,
       promiseCallback4,
-    ]),
+    ])
   );
-
-  // uncomment
-  // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();

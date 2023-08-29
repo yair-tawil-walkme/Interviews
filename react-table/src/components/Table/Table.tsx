@@ -11,9 +11,19 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({
+  rows,
+  handleSorting,
+}: {
+  rows: Row[]
+  handleSorting: (columnName: keyof Row) => void
+}) => {
   const handleRequestSort = (event: MouseEvent, property: string) => {
+    console.log('******** ~ property:', property)
+    console.log('******** ~ event:', event)
+
     console.log('property?', property)
+    handleSorting(property as keyof Row)
   }
 
   const handleSelectAllClick = () => {}
