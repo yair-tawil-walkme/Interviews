@@ -18,11 +18,7 @@ const Table = ({
   rows: Row[]
   handleSorting: (columnName: keyof Row) => void
 }) => {
-  const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('******** ~ property:', property)
-    console.log('******** ~ event:', event)
-
-    console.log('property?', property)
+  const handleRequestSort = (_event: MouseEvent, property: string) => {
     handleSorting(property as keyof Row)
   }
 
