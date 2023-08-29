@@ -7,6 +7,7 @@
   "workspaces": [
     "./adder",
     "./promiseAll",
+    "./sleep",
     "./react-table"
   ],
   "keywords": [],

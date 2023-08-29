@@ -1,3 +1,4 @@
+import { MouseEventHandler, MouseEvent } from 'react'
 import MuiTableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
@@ -20,14 +21,16 @@ const TableHead = ({
 }: {
   order?: 'asc' | 'desc'
   orderBy?: string
-  onRequestSort: (event: any, property: string) => void
+  onRequestSort: (event: MouseEvent, property: string) => void
   rowCount: number
   numSelected: number
-  onSelectAllClick: any
+  onSelectAllClick: () => void
 }) => {
-  const createSortHandler = (property: string) => (event: any) => {
-    onRequestSort(event, property)
-  }
+  const createSortHandler =
+    (property: string): MouseEventHandler<HTMLButtonElement> =>
+    (event) => {
+      onRequestSort(event, property)
+    }
 
   return (
     <MuiTableHead>

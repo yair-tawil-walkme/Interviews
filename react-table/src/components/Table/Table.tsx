@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { MouseEvent } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -9,16 +9,20 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
+import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: any[] }) => {
-  const handleRequestSort = (event: any, property: string) => {
+const Table = ({ rows }: { rows: Row[] }) => {
+  const handleRequestSort = (event: MouseEvent, property: string) => {
     console.log('property?', property)
   }
 
-  const handleSelectAllClick = (event: any) => {}
+  const handleSelectAllClick = () => {}
 
-  const handleClick = (event: any, name: string) => {}
+  const handleClick = (event: MouseEvent, name: string) => {
+    console.log('event', event, 'name', name)
+  }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isSelected = (name: string) => false
 
   return (
@@ -37,13 +41,15 @@ const Table = ({ rows }: { rows: any[] }) => {
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row: any) => {
+              {rows.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event: MouseEvent) =>
+                      handleClick(event, row.name)
+                    }
                     role="checkbox"
                     tabIndex={-1}
                     key={row.name}

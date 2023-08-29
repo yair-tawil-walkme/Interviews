@@ -20,11 +20,12 @@ async function _logPromiseDuration(promise: Promise<void>) {
 }
 
 function sleep(timeout: number) {
-  return Promise.resolve();
+  // your code here
 }
 
 async function run() {
-  await _logPromiseDuration(sleep(5000));
+  // uncomment this:
+  // await _logPromiseDuration(sleep(5000));
 }
 
 run();
