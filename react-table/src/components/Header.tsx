@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { FC } from 'react'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,7 +49,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+interface HeaderProps {
+  setSearchText: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Header: FC<HeaderProps> = (props) => {
+  const { setSearchText } = props
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value)
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +78,7 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase placeholder="Search…" onChange={onChange} />
           </Search>
         </Toolbar>
       </AppBar>

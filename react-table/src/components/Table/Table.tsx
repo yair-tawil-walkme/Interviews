@@ -9,14 +9,27 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
-import { Row } from '../../db/model'
+import { OrderByKey, Row, orderKey } from '../../db/model'
+import { FC, useState } from 'react'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+interface TableProps {
+  rows: Row[],
+}
+
+
+const Table: FC<TableProps> = (props) => {
+  const { rows } = props
+  const [order, setOrder] = useState<orderKey>('asc');
+  const [orderBy, setOrderBy] = useState<OrderByKey>('name');
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property as OrderByKey);
   }
 
-  const handleSelectAllClick = () => {}
+  const handleSelectAllClick = () => { }
 
   const handleClick = (event: MouseEvent, name: string) => {
     console.log('event', event, 'name', name)
@@ -24,6 +37,27 @@ const Table = ({ rows }: { rows: Row[] }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isSelected = (name: string) => false
+
+  const compare = (key: OrderByKey) => {
+    return (a: Row, b: Row) => {
+      const valueA = a[key];
+      const valueB = b[key];
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return order === 'asc'
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+
+      if (typeof valueA === 'number' && typeof valueB === 'number') {
+        return order === 'asc' ? valueA - valueB : valueB - valueA;
+      }
+
+      return 0
+    };
+  };;
+
+  const sortedRows = [...rows].sort(compare(orderBy));
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -34,14 +68,14 @@ const Table = ({ rows }: { rows: Row[] }) => {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {sortedRows.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (

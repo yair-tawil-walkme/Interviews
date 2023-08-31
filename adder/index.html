@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Parcel Sandbox</title>
-    <meta charset="UTF-8" />
-    <script>
-      //todo: Implement the adder function
+<head>
+  <title>Parcel Sandbox</title>
+  <meta charset="UTF-8" />
+  <script>
+    //todo: Implement the adder function
+    const adder = (x) => (y) => x + y
+    function runner(x, y) {
+      document.getElementById("result").innerHTML = adder(x)(y);
+    }
+  </script>
+</head>
 
-      function runner(x, y) {
-        document.getElementById("result").innerHTML = adder(x)(y);
-      }
-    </script>
-  </head>
-
-  <body>
-    <div id="app">
-      <h1>Hello David!</h1>
-      <div>
-        <button onclick="runner(21,3)">Test My Function</button>
-        <div id="result"></div>
-      </div>
+<body>
+  <div id="app">
+    <h1>Hello David!</h1>
+    <div>
+      <button onclick="runner(21,3)">Test My Function</button>
+      <div id="result"></div>
     </div>
-  </body>
+  </div>
+</body>
 </html>

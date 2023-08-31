@@ -39,21 +39,36 @@ function promiseAll(promises: Array<() => Promise<PromiseCallback>>) {
   return Promise.all(promises.map((promiseCallback) => promiseCallback()));
 }
 
-function MyPromiseAll(promises: Array<() => Promise<PromiseCallback>>) {}
+function MyPromiseAll(promises: Array<() => Promise<PromiseCallback>>) {
+  const returnArr: PromiseCallback[] = []
+  return new Promise((resolve, reject) => {
+    let numOfResolved = 0
+    promises.forEach((promise,index)=>{
+      promise().then(res => {
+        numOfResolved += 1
+        returnArr[index] = res
+        if (numOfResolved === promises.length) {
+          resolve(returnArr)
+        }
+      }).catch(reject)
+    })
+  })
+
+}
 
 async function run() {
   // comment
-  await _logPromiseDuration(
-    promiseAll([
-      promiseCallback1,
-      promiseCallback2,
-      promiseCallback3,
-      promiseCallback4,
-    ]),
-  );
+  // await _logPromiseDuration(
+  //   promiseAll([
+  //     promiseCallback1,
+  //     promiseCallback2,
+  //     promiseCallback3,
+  //     promiseCallback4,
+  //   ]),
+  // );
 
   // uncomment
-  // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
+  await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();

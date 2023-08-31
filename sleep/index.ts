@@ -19,13 +19,14 @@ async function _logPromiseDuration(promise: Promise<void>) {
   console.log("\x1b[33m%s\x1b[0m", `duration: ${duration} seconds`);
 }
 
-function sleep(timeout: number) {
+function sleep(timeout: number):Promise <void> {
   // your code here
+  return new Promise((res)=> setTimeout(res, timeout))
 }
 
 async function run() {
   // uncomment this:
-  // await _logPromiseDuration(sleep(5000));
+  await _logPromiseDuration(sleep(5000));
 }
 
 run();
