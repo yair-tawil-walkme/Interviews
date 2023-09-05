@@ -1,9 +1,6 @@
-type PromiseCallback = { value: number; duration: string };
+type Item = { value: number; duration: string };
 
-const createPromiseCallback = (
-  value: number,
-  timeout: number,
-): Promise<PromiseCallback> =>
+const createPromiseCallback = (value: number, timeout: number): Promise<Item> =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve({ value, duration: `${timeout / 1000} sec` });
@@ -35,11 +32,13 @@ async function _logPromiseDuration(promise: Promise<any>) {
   console.table([{ value: "Promise all", duration: `${duration} sec` }]);
 }
 
-function promiseAll(promises: Array<() => Promise<PromiseCallback>>) {
+function promiseAll(promises: Array<() => Promise<Item>>) {
   return Promise.all(promises.map((promiseCallback) => promiseCallback()));
 }
 
-function MyPromiseAll(promises: Array<() => Promise<PromiseCallback>>) {}
+function MyPromiseAll(
+  promises: Array<() => Promise<Item>>,
+): Promise<Array<Item>> {}
 
 async function run() {
   // comment
