@@ -38,21 +38,37 @@ function promiseAll(promises: Array<() => Promise<Item>>) {
 
 function MyPromiseAll(
   promises: Array<() => Promise<Item>>,
-): Promise<Array<Item>> {}
+): Promise<Array<Item>> {
+    const results: Item[] = [];
+    let counter = 0;
+
+    return new Promise((resolve) => {
+        promises.forEach((promiseFunc, i) => {
+            promiseFunc().then(result => {
+                results[i] = result;
+                counter++;
+
+                if (counter === promises.length) {
+                    resolve(results);
+                }
+            });
+        })
+    })
+}
 
 async function run() {
   // comment
-  await _logPromiseDuration(
-    promiseAll([
-      promiseCallback1,
-      promiseCallback2,
-      promiseCallback3,
-      promiseCallback4,
-    ]),
-  );
+//   await _logPromiseDuration(
+//     promiseAll([
+//       promiseCallback1,
+//       promiseCallback2,
+//       promiseCallback3,
+//       promiseCallback4,
+//     ]),
+//   );
 
   // uncomment
-  // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
+  await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();
