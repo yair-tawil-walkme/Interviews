@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,45 +11,109 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+interface isAscMap {
+  name: boolean
+  email: boolean
+  age: boolean
+}
+
+const initialState: isAscMap = {
+  name: true,
+  email: true,
+  age: true,
+}
+
+const Table = ({
+  rows,
+  setRows,
+}: {
+  rows: Row[]
+  setRows: (newRows: Row[]) => void
+}) => {
+  const [isAscSortMap, setIsAscSortMap] = useState<isAscMap>(initialState)
+  const [orderBy, setOrderBy] = useState<keyof isAscMap>('name')
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
+  const [numSelected, setNumSelected] = useState<number>(0)
+
   const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+    const key = property as keyof isAscMap
+
+    const sortedRows = [...rows].sort((a, b) => {
+      const multiplier = isAscSortMap[key] ? 1 : -1
+      if (a[key] < b[key]) return -1 * multiplier
+      if (a[key] > b[key]) return 1 * multiplier
+      return 0
+    })
+
+    setRows(sortedRows)
+    setOrderBy(key)
+    setIsAscSortMap((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
   }
 
-  const handleSelectAllClick = () => {}
+  const handleSelectAllClick = () => {
+    if (numSelected === rows.length) {
+      setSelectedRows(new Set())
+      setNumSelected(0)
+    } else {
+      const selectedRowsIds = rows.map((row) => row.id)
+      setSelectedRows(new Set(selectedRowsIds))
+      setNumSelected(rows.length)
+    }
+  }
 
-  const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
+  const handleClick = (event: MouseEvent, id: number) => {
+    const target = event.target as HTMLInputElement
+    const newSelectedIds = new Set(selectedRows)
+    if (target.type === 'checkbox') {
+      if (newSelectedIds.has(id)) {
+        newSelectedIds.delete(id)
+        setNumSelected((prev) => prev - 1)
+      } else {
+        newSelectedIds.add(id)
+        setNumSelected((prev) => prev + 1)
+      }
+      setSelectedRows(newSelectedIds)
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const isSelected = (name: string) => false
+  const isSelected = (id: number) => {
+    return selectedRows.has(id)
+  }
+
+  const handleDelete = () => {
+    const updatedRows = rows.filter((row) => !selectedRows.has(row.id))
+    setRows(updatedRows)
+    setSelectedRows(new Set())
+    setNumSelected(0)
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar numSelected={0} />
+        <TableToolbar numSelected={numSelected} handleDelete={handleDelete} />
 
         <TableContainer>
           <MuiTable>
             <TableHead
-              numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              numSelected={numSelected}
+              order={isAscSortMap[orderBy] ? 'asc' : 'desc'}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
               {rows.map((row) => {
-                const isItemSelected = isSelected(row.name)
+                const isItemSelected = isSelected(row.id)
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event: MouseEvent) =>
-                      handleClick(event, row.name)
-                    }
+                    onClick={(event: MouseEvent) => handleClick(event, row.id)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.name}
