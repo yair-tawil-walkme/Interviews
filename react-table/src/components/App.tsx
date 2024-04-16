@@ -6,12 +6,13 @@ import { debounce } from 'lodash'
 import { Row } from '../db/model'
 
 const App = () => {
-  const [rows] = useState(getRows())
+  const [rows, setRows] = useState(getRows())
   const [filteredRows, setFilteredRows] = useState<Row[]>([])
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   useEffect(() => {
     setFilteredRows(rows)
+    console.log(1)
   }, [])
 
   const handleSearch = useCallback(
@@ -41,7 +42,11 @@ const App = () => {
   return (
     <div>
       <Header searchTerm={searchTerm} handleChange={handleChange} />
-      <Table rows={filteredRows} setRows={setFilteredRows}/>
+      <Table
+        rows={filteredRows}
+        setFilteredRows={setFilteredRows}
+        setRows={setRows}
+      />
     </div>
   )
 }

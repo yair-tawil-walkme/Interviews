@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useCallback, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,13 +11,13 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-interface isAscMap {
+interface isAscSort {
   name: boolean
   email: boolean
   age: boolean
 }
 
-const initialState: isAscMap = {
+const initialState: isAscSort = {
   name: true,
   email: true,
   age: true,
@@ -25,33 +25,38 @@ const initialState: isAscMap = {
 
 const Table = ({
   rows,
+  setFilteredRows,
   setRows,
 }: {
   rows: Row[]
+  setFilteredRows: (newRows: Row[]) => void
   setRows: (newRows: Row[]) => void
 }) => {
-  const [isAscSortMap, setIsAscSortMap] = useState<isAscMap>(initialState)
-  const [orderBy, setOrderBy] = useState<keyof isAscMap>('name')
+  const [isAscSortMap, setIsAscSortMap] = useState<isAscSort>(initialState)
+  const [orderBy, setOrderBy] = useState<keyof isAscSort>('name')
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
   const [numSelected, setNumSelected] = useState<number>(0)
 
-  const handleRequestSort = (event: MouseEvent, property: string) => {
-    const key = property as keyof isAscMap
+  const handleRequestSort = useCallback(
+    (event: MouseEvent, property: string) => {
+      const key = property as keyof isAscSort
 
-    const sortedRows = [...rows].sort((a, b) => {
-      const multiplier = isAscSortMap[key] ? 1 : -1
-      if (a[key] < b[key]) return -1 * multiplier
-      if (a[key] > b[key]) return 1 * multiplier
-      return 0
-    })
+      const sortedRows = [...rows].sort((a, b) => {
+        const multiplier = isAscSortMap[key] ? 1 : -1
+        if (a[key] < b[key]) return -1 * multiplier
+        if (a[key] > b[key]) return 1 * multiplier
+        return 0
+      })
 
-    setRows(sortedRows)
-    setOrderBy(key)
-    setIsAscSortMap((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }))
-  }
+      setFilteredRows(sortedRows)
+      setOrderBy(key)
+      setIsAscSortMap((prev) => ({
+        ...prev,
+        [key]: !prev[key],
+      }))
+    },
+    [rows]
+  )
 
   const handleSelectAllClick = () => {
     if (numSelected === rows.length) {
@@ -87,6 +92,7 @@ const Table = ({
   const handleDelete = () => {
     const updatedRows = rows.filter((row) => !selectedRows.has(row.id))
     setRows(updatedRows)
+    setFilteredRows(updatedRows)
     setSelectedRows(new Set())
     setNumSelected(0)
   }
