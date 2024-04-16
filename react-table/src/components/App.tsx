@@ -12,7 +12,6 @@ const App = () => {
 
   useEffect(() => {
     setFilteredRows(rows)
-    console.log(1)
   }, [])
 
   const handleSearch = useCallback(
