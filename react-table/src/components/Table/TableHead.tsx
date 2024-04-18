@@ -36,7 +36,7 @@ const TableHead = ({
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox color="primary" onClick={onSelectAllClick} value={numSelected === rowCount} />
         </TableCell>
 
         {cells.map((headCell) => (
