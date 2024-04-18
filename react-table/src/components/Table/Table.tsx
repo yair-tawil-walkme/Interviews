@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import {Dispatch, MouseEvent, SetStateAction, useCallback, useRef, useState} from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,37 +11,70 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({ rows, setRows, search }: { rows: Row[], setRows: Dispatch<SetStateAction<Row[]>>, search: string }) => {
+  const [checkedRows, setCheckedRows] = useState<any>(rows.reduce((m,row) => ({ ...m, [row.name]: false}), {}));
+  const numSelectedRef = useRef(0)
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false)
+  const [orderBy, setOrderBy] = useState('');
+  const [isAscending, setIsAscending] = useState<boolean>();
+
   const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+    setOrderBy(property)
+    setIsAscending(!isAscending);
   }
 
-  const handleSelectAllClick = () => {}
+  const filterBySearch = (row: Row) => {
+    return (
+        row.name.toLowerCase().includes(search.toLowerCase()) ||
+        row.email.toLowerCase().includes(search.toLowerCase())
+    )
+  };
+
+  const orderByColumn = useCallback((row1: Row, row2: Row) => {
+    if (orderBy && isAscending !== undefined) {
+      // @ts-ignore
+      const result = row1[orderBy] < row2[orderBy] ? -1 : 1;
+      return isAscending ? result : result * -1;
+    }
+    return 0
+  }, [orderBy, isAscending])
+
+  const handleSelectAllClick = () => {
+    setIsAllChecked(!isAllChecked);
+    numSelectedRef.current = isAllChecked? 0 : rows.length;
+  }
 
   const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+    numSelectedRef.current += isChecked? 1 : - 1;
+    setCheckedRows({...checkedRows, [name]: isChecked });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const isSelected = (name: string) => false
+  const isSelected = (name: string) => checkedRows[name] === true;
+
+  const deleteItemsHandler = () => {
+    setRows(rows.filter((row) => checkedRows[row.name] !== true));
+    numSelectedRef.current = 0;
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar numSelected={0} />
+        <TableToolbar deleteItemsHandler={deleteItemsHandler} numSelected={numSelectedRef.current} />
 
         <TableContainer>
           <MuiTable>
             <TableHead
-              numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              numSelected={numSelectedRef.current}
+              order={isAscending? 'asc' : 'desc'}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {rows.filter(filterBySearch).sort(orderByColumn).map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
@@ -56,7 +89,7 @@ const Table = ({ rows }: { rows: Row[] }) => {
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox color="primary" />
+                      <Checkbox color="primary" checked={isItemSelected || isAllChecked} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       {row.name}
