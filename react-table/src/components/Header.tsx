@@ -1,10 +1,17 @@
+import { useDebouncedCallback } from 'use-debounce'
+
 import { styled, alpha } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
+import { IconButton } from '@mui/material'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { Delete as DeleteIcon } from '@mui/icons-material'
+
+import FilterObject from '../types/filterObject'
+import { useDeletedRows, useSelectedRows, useTableFilterData } from '../utils/row'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,7 +55,24 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
+const DEFAULT_TIME = 400
+
 const Header = () => {
+  const [_, setTableFilterData] = useTableFilterData()
+  
+
+  const debouncedSetSearchData = useDebouncedCallback(
+    (value: string) => setTableFilterData((prev: FilterObject) => ({ ...prev, search: value })),
+    DEFAULT_TIME
+  )
+
+  const onChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = e
+    debouncedSetSearchData(value)
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,8 +91,9 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase placeholder="Search…" onChange={onChangeSearchInput} />
           </Search>
+
         </Toolbar>
       </AppBar>
     </Box>
