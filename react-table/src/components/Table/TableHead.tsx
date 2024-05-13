@@ -6,7 +6,9 @@ import Checkbox from '@mui/material/Checkbox'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Box from '@mui/material/Box'
 import { visuallyHidden } from '@mui/utils'
+
 import { cells } from './cells'
+import { ColumnsType } from '../../db/model'
 
 const TableHead = ({
   order = 'asc',
@@ -21,22 +23,24 @@ const TableHead = ({
 }: {
   order?: 'asc' | 'desc'
   orderBy?: string
-  onRequestSort: (event: MouseEvent, property: string) => void
+  onRequestSort: (event: MouseEvent, property: ColumnsType, order: undefined | 'asc' | 'desc') => void
   rowCount: number
   numSelected: number
-  onSelectAllClick: () => void
+  onSelectAllClick: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
   const createSortHandler =
-    (property: string): MouseEventHandler<HTMLButtonElement> =>
-    (event) => {
-      onRequestSort(event, property)
-    }
+    (property: ColumnsType, order: undefined | 'asc' | 'desc'): MouseEventHandler<HTMLButtonElement> =>
+      (event) => {
+        onRequestSort(event, property, order)
+      }
+
+  const isSomeRowsClicked = (numSelected > 0 && numSelected < rowCount)
 
   return (
     <MuiTableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+        <TableCell padding="checkbox" >
+          <Checkbox color="primary" onChange={onSelectAllClick} indeterminate={isSomeRowsClicked} />
         </TableCell>
 
         {cells.map((headCell) => (
@@ -48,8 +52,8 @@ const TableHead = ({
           >
             <TableSortLabel
               active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
+              direction={order}
+              onClick={createSortHandler(headCell.id as ColumnsType, order)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (

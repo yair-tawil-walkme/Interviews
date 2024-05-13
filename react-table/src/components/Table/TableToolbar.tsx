@@ -6,7 +6,17 @@ import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 
-const TableToolbar = ({ numSelected }: { numSelected: number }) => {
+import { useDeletedRows, useSelectedRows } from '../../utils/row'
+
+const TableToolbar = ({ numSelected, rowsLength }: { numSelected: number, rowsLength: number }) => {
+  const [selectedRows, setSelectedRows] = useSelectedRows()
+  const [_, setDeletedRows] = useDeletedRows()
+
+  const onDeleteSelectedRows = () => {
+    setDeletedRows(prev => Array.from(new Set([...prev, ...selectedRows])))
+    setSelectedRows([])
+  }
+
   return (
     <Toolbar
       sx={{
@@ -28,7 +38,7 @@ const TableToolbar = ({ numSelected }: { numSelected: number }) => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} / {rowsLength} selected
         </Typography>
       ) : (
         <Typography
@@ -43,7 +53,7 @@ const TableToolbar = ({ numSelected }: { numSelected: number }) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDeleteSelectedRows}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
