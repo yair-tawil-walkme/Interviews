@@ -38,21 +38,40 @@ function promiseAll(promises: Array<() => Promise<Item>>) {
 
 function MyPromiseAll(
   promises: Array<() => Promise<Item>>,
-): Promise<Array<Item>> {}
+): Promise<Array<Item>> {
+  return new Promise((resolve, reject) =>{
+    const completedValues: Array<Item> = [];
+    let counter = 0;
+    for(let i =0 ; i < promises.length; i++){
+      const currentPromise = promises[i];
+      currentPromise().then((returnVal) =>{
+                                completedValues[i] = returnVal;
+                                counter++;
+                                if(counter === promises.length){
+                                  resolve(completedValues);
+                                }
+                              }
+                              )
+                      .catch((err)=>{
+                        reject(err);
+                      })
+    }
+  })
+}
 
 async function run() {
-  // comment
-  await _logPromiseDuration(
-    promiseAll([
-      promiseCallback1,
-      promiseCallback2,
-      promiseCallback3,
-      promiseCallback4,
-    ]),
-  );
+  // // comment
+  // await _logPromiseDuration(
+  //   promiseAll([
+  //     promiseCallback1,
+  //     promiseCallback2,
+  //     promiseCallback3,
+  //     promiseCallback4,
+  //   ]),
+  // );
 
   // uncomment
-  // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
+   await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
 run();
