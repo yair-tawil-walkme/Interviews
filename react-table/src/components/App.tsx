@@ -5,11 +5,16 @@ import { getRows } from '../db/rows'
 
 const App = () => {
   const [rows] = useState(getRows())
+  const [searchText, setSearchText] = useState('');
+
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearchText(e.target.value)
+  }
 
   return (
     <div>
-      <Header />
-      <Table rows={rows} />
+      <Header searchText={searchText} onChange={onChangeSearch}/>
+      <Table rows={rows} searchText={searchText} />
     </div>
   )
 }
