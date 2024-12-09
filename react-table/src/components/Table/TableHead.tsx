@@ -24,7 +24,7 @@ const TableHead = ({
   onRequestSort: (event: MouseEvent, property: string) => void
   rowCount: number
   numSelected: number
-  onSelectAllClick: () => void
+  onSelectAllClick: (event: MouseEvent) => void
 }) => {
   const createSortHandler =
     (property: string): MouseEventHandler<HTMLButtonElement> =>
