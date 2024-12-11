@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -12,10 +12,42 @@ import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
 const Table = ({ rows }: { rows: Row[] }) => {
+  const [sortField,setSortField] = useState('');
+  const [sortOrder,setSortOrder] = useState<'asc' | 'desc'>('asc');
+
   const handleRequestSort = (event: MouseEvent, property: string) => {
+    setSortOrder((prevOrder) =>(
+      (sortField === property && prevOrder === 'asc' ? 'desc' : 'asc')
+    ))
+    setSortField(property);
     console.log('property?', property)
   }
 
+  const getSortData =(data : Row[] , field : string, order : 'asc' | 'desc'): Row[] => {
+    console.log(field)
+    return [...data].sort((a,b) => {
+      const valueA = a[field as keyof Row];
+      const valueB = b[field as keyof Row];
+
+      if(typeof valueA === 'string' && typeof valueB === 'string'){
+        return order === 'asc' ?
+          valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+
+      if(typeof valueA === 'number' && typeof valueB === 'number'){
+        return order === 'asc' ?
+        valueA - valueB
+        : valueB - valueA;
+      }
+
+      // if the values can't be compared
+      return 0; 
+    });
+  }
+
+  const sortedData = useMemo(() => getSortData(rows, sortField, sortOrder), [rows, sortField, sortOrder])
+  
   const handleSelectAllClick = () => {}
 
   const handleClick = (event: MouseEvent, name: string) => {
@@ -34,14 +66,14 @@ const Table = ({ rows }: { rows: Row[] }) => {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={sortOrder}
+              orderBy={sortField}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {sortedData.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
