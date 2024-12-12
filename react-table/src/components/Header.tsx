@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import {ChangeEvent} from 'react'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -12,6 +13,7 @@ const Search = styled('div')(({ theme }) => ({
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
+    boxShadow: `0 4px 8px rgba(0, 0, 0, 0.1)`,
   },
   marginLeft: 0,
   width: '100%',
@@ -44,14 +46,25 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
       '&:focus': {
         width: '20ch',
       },
+      border: '1px solid transparent',
+      borderRadius: theme.shape.borderRadius,
+      '&:focus-visible': {
+        borderColor: theme.palette.primary.main,
+      },
     },
   },
 }))
 
-const Header = () => {
+const Header = ({
+  searchQuery,
+  onSearchChange,
+  }:{
+    searchQuery: string;
+    onSearchChange: (e:ChangeEvent<HTMLInputElement>) => void;
+}) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
         <Toolbar>
           <Typography
             variant="h6"
@@ -67,7 +80,10 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase
+             placeholder="Search…"
+             value={searchQuery}
+             onChange={onSearchChange} />
           </Search>
         </Toolbar>
       </AppBar>
