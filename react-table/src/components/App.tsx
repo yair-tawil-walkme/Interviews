@@ -4,7 +4,7 @@ import Table from './Table/Table'
 import { getRows } from '../db/rows'
 
 const App = () => {
-  const [rows] = useState(getRows())
+  const [rows,setRows] = useState(getRows())
   const [searchQuery,setSearchQuery] = useState('');
   
   const filteredRows = useMemo(() => {
@@ -18,11 +18,15 @@ const App = () => {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   }
+  
+  const handleDelete = (names: string[]) => {
+    setRows(rows.filter((row) => !names.includes(row.name)));
+  }
 
   return (
     <div>
       <Header searchQuery = {searchQuery} onSearchChange = {handleSearchChange}/>
-      <Table rows={filteredRows} />
+      <Table rows={filteredRows} onDelete = {handleDelete}/>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo, useState } from 'react'
+import { ChangeEvent, MouseEvent, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,9 +11,11 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({ rows, onDelete }: { rows: Row[], onDelete: (names: string[]) => void }) => {
+  
   const [sortField,setSortField] = useState('');
   const [sortOrder,setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [selectedRows,setSelectedRows] = useState<string[]>([]);
 
   const handleRequestSort = (event: MouseEvent, property: string) => {
     setSortOrder((prevOrder) =>(
@@ -48,29 +50,45 @@ const Table = ({ rows }: { rows: Row[] }) => {
 
   const sortedData = useMemo(() => getSortData(rows, sortField, sortOrder), [rows, sortField, sortOrder])
   
-  const handleSelectAllClick = () => {}
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(selectedRows);
+       if (selectedRows.length === rows.length) {
+        setSelectedRows([]); 
+      } else {
+        setSelectedRows(sortedData.map((row) => row.name)); 
+       }
+     };
 
   const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
+    setSelectedRows((prevSelected) => 
+      prevSelected.includes(name) ?
+      prevSelected.filter((selectedName) => selectedName !== name)
+      : [...prevSelected , name]
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const isSelected = (name: string) => false
+  const isSelected = (name: string) => selectedRows.includes(name);
+  
+  const handleDelete = () => {
+    onDelete(selectedRows);
+    setSelectedRows([]);
+  };
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar numSelected={0} />
+        <TableToolbar numSelected={selectedRows.length} onDelete={handleDelete} />
 
         <TableContainer>
           <MuiTable>
             <TableHead
-              numSelected={0}
+              numSelected={selectedRows.length}
               order={sortOrder}
               orderBy={sortField}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={sortedData.length}
             />
             <TableBody>
               {sortedData.map((row) => {
@@ -88,7 +106,8 @@ const Table = ({ rows }: { rows: Row[] }) => {
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox color="primary" />
+                      <Checkbox color="primary"
+                                checked = {isItemSelected} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       {row.name}

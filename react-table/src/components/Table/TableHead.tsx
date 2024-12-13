@@ -1,4 +1,4 @@
-import { MouseEventHandler, MouseEvent } from 'react'
+import { MouseEventHandler, MouseEvent, ChangeEvent, useState } from 'react'
 import MuiTableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
@@ -24,8 +24,15 @@ const TableHead = ({
   onRequestSort: (event: MouseEvent, property: string) => void
   rowCount: number
   numSelected: number
-  onSelectAllClick: () => void
+  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
 }) => {
+  const [checked, setChecked] = useState(false); 
+  
+  const checkHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);  
+    onSelectAllClick(event); 
+  };
+
   const createSortHandler =
     (property: string): MouseEventHandler<HTMLButtonElement> =>
     (event) => {
@@ -36,7 +43,10 @@ const TableHead = ({
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox color="primary"
+                    indeterminate={numSelected > 0 && numSelected < rowCount}
+                    checked={rowCount > 0 && numSelected === rowCount}
+                    onChange={checkHandler} />
         </TableCell>
 
         {cells.map((headCell) => (
