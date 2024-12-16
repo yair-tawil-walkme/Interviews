@@ -20,12 +20,16 @@ async function _logPromiseDuration(promise: Promise<void>) {
 }
 
 function sleep(timeout: number) {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(resolve, timeout);
+  });
+  // setTimeout(()=> {}, timeout)
   // your code here
 }
 
 async function run() {
   // uncomment this:
-  // await _logPromiseDuration(sleep(5000));
+  await _logPromiseDuration(sleep(5000));
 }
 
 run();
