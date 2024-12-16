@@ -48,7 +48,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+interface HeaderProps {
+  searchQuery: string
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +72,11 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase
+              placeholder="Search…"
+              value={searchQuery}
+              onChange={onSearchChange}
+            />
           </Search>
         </Toolbar>
       </AppBar>
