@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, SetStateAction } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -10,23 +10,33 @@ import Checkbox from '@mui/material/Checkbox'
 import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
+import { Sort } from '../App'
 
-const Table = ({ rows }: { rows: Row[] }) => {
-  const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+const Table = ({
+  rows,
+  toggleSort,
+  setSelectedRows,
+  sortType,
+}: {
+  rows: Row[]
+  toggleSort: () => void
+  setSelectedRows: React.Dispatch<SetStateAction<number[]>>
+  sortType: Sort
+}) => {
+  const handleRequestSort = () => {
+    toggleSort()
   }
 
   const handleSelectAllClick = () => {}
 
-  const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
+  const handleClick = (event: MouseEvent, id: number) => {
+    setSelectedRows((prev) => [...prev, id])
   }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isSelected = (name: string) => false
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', margin: 5 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableToolbar numSelected={0} />
 
@@ -34,7 +44,7 @@ const Table = ({ rows }: { rows: Row[] }) => {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
+              order={sortType === 'no-sort' ? 'asc' : sortType}
               // orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
@@ -47,9 +57,7 @@ const Table = ({ rows }: { rows: Row[] }) => {
                 return (
                   <TableRow
                     hover
-                    onClick={(event: MouseEvent) =>
-                      handleClick(event, row.name)
-                    }
+                    onClick={(event: MouseEvent) => handleClick(event, row.id)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.name}
