@@ -15,5 +15,8 @@
   "license": "ISC",
   "devDependencies": {
     "prettier": "^3.0.1"
+  },
+  "dependencies": {
+    "jotai": "^2.11.0"
   }
 }

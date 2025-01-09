@@ -5,6 +5,8 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { searchAtom } from './atom'
+import { useSetAtom } from 'jotai'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -49,6 +51,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 const Header = () => {
+  const setSearch = useSetAtom(searchAtom)
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value === '') {
+      setSearch('') // Clear search state
+    } else {
+      setSearch(event.target.value)
+    }
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +77,10 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase
+              placeholder="Search…"
+              onChange={handleSearchChange}
+            />
           </Search>
         </Toolbar>
       </AppBar>
