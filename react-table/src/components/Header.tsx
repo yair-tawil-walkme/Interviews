@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { styled, alpha } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -5,6 +6,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { ChangeEvent } from 'react'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,7 +50,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+const Header = ({
+  searchQuery,
+  setSearchQuery
+}:{
+  searchQuery: string
+  setSearchQuery:(query: string) => void
+}) => {
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) =>{
+    setSearchQuery(event.target.value)
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +78,10 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase 
+              placeholder="Search…"
+              value={searchQuery}
+              onChange={handleSearch} />
           </Search>
         </Toolbar>
       </AppBar>

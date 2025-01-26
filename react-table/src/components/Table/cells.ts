@@ -7,7 +7,7 @@ export const cells = [
   },
   {
     id: 'email',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Email',
   },
