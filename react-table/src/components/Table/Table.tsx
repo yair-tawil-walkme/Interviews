@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,9 +11,51 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({ rows, input }: { rows: Row[], input: string }) => {
+  const [filterRow, setFilterRow] = useState<Row[]>(rows);
+  const [nameUp, setNameUp] = useState<boolean>(true);
+  const [emailUp, setEmailUp] = useState<boolean>(true);
+  const [ageUp, setAgeUp] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (input !== '') {
+      setFilterRow(rows.filter((row) => row.name.toLowerCase().includes(input.toLowerCase()) || row.email.toLowerCase().includes(input.toLowerCase())));
+    } else {
+      setFilterRow(rows);
+    }
+  }, [input]);
+
+  const sortRows = (sortKey: 'name' | 'email' | 'age', sortDir: boolean) => {
+    setFilterRow(filterRow.sort((rowA, rowB) => {
+      if (rowA[sortKey] > rowB[sortKey]) {
+        return sortDir ? - 1 : 1;
+      }
+      return sortDir ? 1 : - 1;
+    }));
+    switch (sortKey) {
+      case "name":
+        setNameUp(!sortDir);
+        break;
+      case 'email':
+        setEmailUp(!sortDir);
+        break;
+      case 'age':
+        setAgeUp(!sortDir);
+        break;
+      default:
+        break;
+    }
+  }
+
   const handleRequestSort = (event: MouseEvent, property: string) => {
     console.log('property?', property)
+    if (property === 'name') {
+        sortRows(property, nameUp);
+    } else if (property === 'email') {
+      sortRows(property, emailUp);
+    } else if(property === 'age') {
+      sortRows(property, ageUp);
+    }
   }
 
   const handleSelectAllClick = () => {}
@@ -38,10 +80,10 @@ const Table = ({ rows }: { rows: Row[] }) => {
               // orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={filterRow.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {filterRow.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (

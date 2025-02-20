@@ -5,11 +5,12 @@ import { getRows } from '../db/rows'
 
 const App = () => {
   const [rows] = useState(getRows())
+  const [input, setInput] = useState<string>('');
 
   return (
     <div>
-      <Header />
-      <Table rows={rows} />
+      <Header setInput={setInput}/>
+      <Table rows={rows} input={input}/>
     </div>
   )
 }
