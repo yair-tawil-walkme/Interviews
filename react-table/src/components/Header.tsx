@@ -5,6 +5,9 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { Row } from '../db/model'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,7 +51,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+const Header = ({setSearchValue}: { setSearchValue: Dispatch<SetStateAction<string>> }) => {
+  const [searchInput,setSearchInput]=useState('')
+
+  useEffect(()=>{
+    const timeoutId=setTimeout(()=>{
+        setSearchValue(searchInput.toLowerCase())
+    },1000)
+
+    return ()=>{
+      clearTimeout(timeoutId)
+    }
+  },[searchInput])
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +82,7 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase value={searchInput} onChange={(e)=>setSearchInput(e.target.value)} placeholder="Search…" />
           </Search>
         </Toolbar>
       </AppBar>
