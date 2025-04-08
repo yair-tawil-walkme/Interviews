@@ -45,18 +45,18 @@ const Table = ({ rows,searchInput,onDelete}: { rows: Row[],searchInput: string,o
     return false
   },[selected])
   
-  const handleRequestSort = (event: MouseEvent, property: string) => {
+  const handleRequestSort = useCallback((event: MouseEvent, property: string) => {
     setOrderBy(property)
     setOrder((prevOrder)=>prevOrder==='asc'?'desc':'asc')
-  }
+  }, []);
 
-  const handleSelectAllClick = () => {
+  const handleSelectAllClick = useCallback(() => {
     setSelected(prevSelected =>
       displayedRows.length !== prevSelected.length
         ? displayedRows.map(item => item.name)
         : []
     );
-  }
+  },[])
 
   const handleClick = (event: MouseEvent, name: string) => {
     setSelected(prev=>
@@ -64,10 +64,10 @@ const Table = ({ rows,searchInput,onDelete}: { rows: Row[],searchInput: string,o
     )
   }
 
-  const onClickDelete = () => {
+  const onClickDelete = useCallback(() => {
     onDelete(selected)
     setSelected([])
-  }
+  },[])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isSelected = (name: string) => selected.includes(name);
