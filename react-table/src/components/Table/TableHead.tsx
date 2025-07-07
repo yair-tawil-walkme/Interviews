@@ -9,8 +9,8 @@ import { visuallyHidden } from '@mui/utils'
 import { cells } from './cells'
 
 const TableHead = ({
-  order = 'asc',
-  orderBy = 'name',
+  order,
+  orderBy,
   onRequestSort,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSelectAllClick,

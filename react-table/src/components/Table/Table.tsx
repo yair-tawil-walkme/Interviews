@@ -11,9 +11,20 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({
+  rows,
+  onSort,
+  order,
+  orderBy,
+}: {
+  rows: Row[]
+  onSort: (col: string) => void
+  order: 'asc' | 'desc'
+  orderBy: string
+}) => {
   const handleRequestSort = (event: MouseEvent, property: string) => {
     console.log('property?', property)
+    onSort(property)
   }
 
   const handleSelectAllClick = () => {}
@@ -34,8 +45,8 @@ const Table = ({ rows }: { rows: Row[] }) => {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
