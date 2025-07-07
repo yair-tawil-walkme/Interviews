@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
+import { Filter } from './Filter'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -48,7 +49,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+type Props = {
+  onFilter: (val: string) => void
+}
+
+const Header = ({ onFilter }: Props) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -62,13 +67,15 @@ const Header = () => {
             My Account
           </Typography>
 
-          <Search>
+          <Filter onFilter={onFilter} />
+
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
 
             <StyledInputBase placeholder="Search…" />
-          </Search>
+          </Search> */}
         </Toolbar>
       </AppBar>
     </Box>
