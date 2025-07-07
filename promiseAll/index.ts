@@ -37,8 +37,13 @@ function promiseAll(promises: Array<() => Promise<Item>>) {
 }
 
 function MyPromiseAll(
-  promises: Array<() => Promise<Item>>,
-): Promise<Array<Item>> {}
+  promises: Array<() => Promise<Item>>
+): Promise<Array<Item>> {
+  const items: Item[] = [];
+
+  // @todo - implement the promise all function
+  return Promise.all([]);
+}
 
 async function run() {
   // comment
@@ -48,10 +53,10 @@ async function run() {
       promiseCallback2,
       promiseCallback3,
       promiseCallback4,
-    ]),
+    ])
   );
 
-  // uncomment
+  // @todo - uncomment
   // await _logPromiseDuration(MyPromiseAll([promiseCallback1, promiseCallback2, promiseCallback3, promiseCallback4]));
 }
 
