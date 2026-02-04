@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -12,14 +12,51 @@ import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
 const Table = ({ rows }: { rows: Row[] }) => {
-  const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+  const [sortedRows, setSortedRows] = useState<Row[]>(rows);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [selectedCols, setSelectedCols] = useState<string[]>([]);
+  
+  const handleRequestSort = (property: string) => {
+    const isAsc = order === 'asc';
+
+    const sorted = [...sortedRows].sort((a, b) => {
+      const aValue = a[property as keyof Row];
+      const bValue = b[property as keyof Row];
+
+      if (aValue < bValue) {
+        return isAsc ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return isAsc ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setSortedRows(sorted);
+    setOrder(isAsc ? 'desc' : 'asc');
   }
 
-  const handleSelectAllClick = () => {}
+    
+
+  const handleSelectAllClick = () => {
+    if (selectedCols.length === rows.length) {
+      setSelectedCols([]);
+      return;
+    }
+
+    const newSelecteds = rows.map((n) => n.name);
+    setSelectedCols(newSelecteds);
+  }
 
   const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
+    setSelectedCols((prevSelected) => {
+      if (prevSelected.includes(name)) {
+        return prevSelected.filter((col) => col !== name);
+      } 
+        
+      return [...prevSelected, name];
+
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,7 +78,7 @@ const Table = ({ rows }: { rows: Row[] }) => {
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {sortedRows.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (

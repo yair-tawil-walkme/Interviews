@@ -21,15 +21,15 @@ const TableHead = ({
 }: {
   order?: 'asc' | 'desc'
   orderBy?: string
-  onRequestSort: (event: MouseEvent, property: string) => void
+  onRequestSort: (property: string) => void
   rowCount: number
   numSelected: number
   onSelectAllClick: () => void
 }) => {
   const createSortHandler =
-    (property: string): MouseEventHandler<HTMLButtonElement> =>
-    (event) => {
-      onRequestSort(event, property)
+    (property: string): MouseEventHandler<HTMLButtonElement> => () => {
+
+      onRequestSort(property)
     }
 
   return (
