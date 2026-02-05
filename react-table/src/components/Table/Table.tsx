@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -12,9 +12,22 @@ import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
 const Table = ({ rows }: { rows: Row[] }) => {
-  const handleRequestSort = (event: MouseEvent, property: string) => {
-    console.log('property?', property)
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [orderBy, setOrderBy] = useState<string>('name')
+
+  const handleRequestSort = (_event: MouseEvent, property: string) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
   }
+
+  const sortedRows = [...rows].sort((a, b) => {
+    const aVal = a[orderBy as keyof Row]
+    const bVal = b[orderBy as keyof Row]
+    if (aVal < bVal) return order === 'asc' ? -1 : 1
+    if (aVal > bVal) return order === 'asc' ? 1 : -1
+    return 0
+  })
 
   const handleSelectAllClick = () => {}
 
@@ -34,14 +47,14 @@ const Table = ({ rows }: { rows: Row[] }) => {
           <MuiTable>
             <TableHead
               numSelected={0}
-              // order={order}
-              // orderBy={orderBy}
+              order={order}
+              orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {sortedRows.map((row) => {
                 const isItemSelected = isSelected(row.name)
 
                 return (
