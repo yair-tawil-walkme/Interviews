@@ -4,7 +4,7 @@ import Table from './Table/Table'
 import { getRows } from '../db/rows'
 
 const App = () => {
-  const [rows] = useState(getRows())
+  const [rows, setRows] = useState(getRows())
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredRows = rows.filter((row) => {
@@ -12,10 +12,14 @@ const App = () => {
     return row.name.toLowerCase().includes(term) || row.email.toLowerCase().includes(term)
   })
 
+  const handleDelete = (ids: Set<number>) => {
+    setRows((prev) => prev.filter((row) => !ids.has(row.id)))
+  }
+
   return (
-    <div>
+    <div className="app-layout">
       <Header onSearchChange={setSearchTerm} />
-      <Table rows={filteredRows} />
+      <Table rows={filteredRows} onDelete={handleDelete} />
     </div>
   )
 }

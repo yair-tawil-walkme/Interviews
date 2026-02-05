@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useCallback, useState } from 'react'
 import Box from '@mui/material/Box'
 import MuiTable from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -11,9 +11,10 @@ import TableHead from './TableHead'
 import TableToolbar from './TableToolbar'
 import { Row } from '../../db/model'
 
-const Table = ({ rows }: { rows: Row[] }) => {
+const Table = ({ rows, onDelete }: { rows: Row[]; onDelete: (ids: Set<number>) => void }) => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [orderBy, setOrderBy] = useState<string>('name')
+  const [selected, setSelected] = useState<Set<number>>(new Set())
 
   const handleRequestSort = (_event: MouseEvent, property: string) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -29,24 +30,35 @@ const Table = ({ rows }: { rows: Row[] }) => {
     return 0
   })
 
-  const handleSelectAllClick = () => {}
+  const handleSelectAllClick = useCallback(() => {
+    setSelected((prev) =>
+      prev.size === rows.length ? new Set() : new Set(rows.map((r) => r.id))
+    )
+  }, [rows])
 
-  const handleClick = (event: MouseEvent, name: string) => {
-    console.log('event', event, 'name', name)
-  }
+  const handleToggleRow = useCallback((id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const isSelected = (name: string) => false
+  const handleDelete = useCallback(() => {
+    onDelete(selected)
+    setSelected(new Set())
+  }, [selected, onDelete])
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar numSelected={0} />
+      <Paper sx={{ width: '100%', mb: 2, borderRadius: 2 }} elevation={3}>
+        <TableToolbar numSelected={selected.size} onDelete={handleDelete} />
 
         <TableContainer>
           <MuiTable>
             <TableHead
-              numSelected={0}
+              numSelected={selected.size}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -54,22 +66,30 @@ const Table = ({ rows }: { rows: Row[] }) => {
               rowCount={rows.length}
             />
             <TableBody>
+              {sortedRows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} align="center" sx={{ color: 'text.secondary', py: 6 }}>
+                    No rows to display
+                  </TableCell>
+                </TableRow>
+              )}
               {sortedRows.map((row) => {
-                const isItemSelected = isSelected(row.name)
+                const isItemSelected = selected.has(row.id)
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event: MouseEvent) =>
-                      handleClick(event, row.name)
-                    }
                     role="checkbox"
                     tabIndex={-1}
-                    key={row.name}
+                    key={row.id}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
-                      <Checkbox color="primary" />
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        onChange={() => handleToggleRow(row.id)}
+                      />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
                       {row.name}

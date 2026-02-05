@@ -12,11 +12,8 @@ const TableHead = ({
   order = 'asc',
   orderBy = 'name',
   onRequestSort,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSelectAllClick,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rowCount,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   numSelected,
 }: {
   order?: 'asc' | 'desc'
@@ -36,7 +33,12 @@ const TableHead = ({
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox
+            color="primary"
+            checked={numSelected === rowCount && rowCount > 0}
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            onChange={onSelectAllClick}
+          />
         </TableCell>
 
         {cells.map((headCell) => (
