@@ -52,7 +52,7 @@ const Table = ({ rows, onDelete }: { rows: Row[]; onDelete: (ids: Set<number>) =
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2, borderRadius: 2 }} elevation={3}>
+      <Paper sx={{ width: '100%', mb: 2, borderRadius: 2, overflow: 'hidden', borderTop: '3px solid', borderTopColor: 'primary.main' }} elevation={2}>
         <TableToolbar numSelected={selected.size} onDelete={handleDelete} />
 
         <TableContainer>

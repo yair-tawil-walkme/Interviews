@@ -19,3 +19,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.app-layout .MuiTableHead-root .MuiTableRow-root th {
+  background-color: #f2f4f7;
+  font-weight: 600;
+}
+
+.app-layout .MuiTableBody-root .MuiTableRow-root:nth-child(even):not(.Mui-selected) {
+  background-color: #fafbfc;
+}
+
+.app-layout .MuiTableBody-root .MuiTableRow-root {
+  transition: background-color 0.15s ease;
+}
+
+.app-layout .MuiTableBody-root .MuiTableRow-root:hover td,
+.app-layout .MuiTableBody-root .MuiTableRow-root:hover th {
+  background-color: #e3eaf6;
+}
