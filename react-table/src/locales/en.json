@@ -1,0 +1,20 @@
+{
+  "appTitle": "My Account",
+  "searchPlaceholder": "Search…",
+  "ariaLabelSearch": "search",
+  "tooltipThemeLight": "Switch to light theme",
+  "tooltipThemeDark": "Switch to dark theme",
+  "ariaLabelThemeToggle": "Toggle theme",
+  "tableTitle": "Users",
+  "selectedCount": "{{count}} selected",
+  "tooltipDelete": "Delete",
+  "tooltipFilterList": "Filter list",
+  "ariaLabelSelectAll": "select all",
+  "ariaLabelDelete": "delete",
+  "sortedAscending": "sorted ascending",
+  "sortedDescending": "sorted descending",
+  "columnLabelName": "Name",
+  "columnLabelEmail": "Email",
+  "columnLabelAge": "Age",
+  "emptySearchMessage": "No users match your search."
+}
