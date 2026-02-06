@@ -1,0 +1,21 @@
+.tableToolbar {
+  padding-left: 24px;
+  padding-right: 8px;
+  transition: background-color 0.15s ease;
+
+  @media (min-width: 600px) {
+    padding-right: 8px;
+  }
+
+  &.tableToolbarSelected {
+    background-color: rgba(13, 115, 119, 0.1);
+  }
+
+  [data-theme='light'] &.tableToolbarSelected {
+    background-color: rgba(13, 148, 136, 0.14);
+  }
+}
+
+.tableToolbarTitle {
+  flex: 1 1 100%;
+}

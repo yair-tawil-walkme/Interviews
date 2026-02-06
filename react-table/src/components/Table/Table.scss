@@ -1,0 +1,123 @@
+.tableWrapper {
+  width: 100%;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tablePaper {
+  width: 100%;
+  max-width: 960px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Cap height so table area can scroll; use viewport calc so flex chain isn't relied on */
+  max-height: calc(
+    100vh - var(--header-height) - var(--table-outer-padding) - var(--table-toolbar-height) - var(--table-paper-margin)
+  );
+
+  > .tableToolbar {
+    flex-shrink: 0;
+  }
+
+  > .tableContainer {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 24px;
+    /* Explicit max so overflow always triggers when content is taller */
+    max-height: calc(
+      100vh - var(--header-height) - var(--table-outer-padding) - var(--table-paper-margin) - var(--table-toolbar-height)
+    );
+
+  }
+}
+
+.tableContainer {
+  min-height: 0;
+}
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 0;
+
+  thead tr {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    th {
+      font-weight: 600;
+      font-size: 0.8125rem;
+    }
+  }
+
+  [data-theme='light'] & thead tr {
+    background-color: rgba(13, 148, 136, 0.08);
+    border-bottom-color: rgba(13, 148, 136, 0.2);
+
+    th {
+      color: rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  /* Checkbox column fixed width; data columns share the rest and stretch to fill */
+  th:first-child,
+  td:first-child {
+    width: 44px;
+    max-width: 44px;
+    min-width: 44px;
+    padding-left: 12px;
+    padding-right: 8px;
+    box-sizing: border-box;
+  }
+
+  /* Data columns: min-width for content, no fixed width so they stretch to fill table */
+  .tableCellName {
+    min-width: 120px;
+  }
+
+  .tableCellEmail {
+    min-width: 160px;
+  }
+
+  .tableCellAge {
+    min-width: 64px;
+    padding-right: 24px;
+  }
+}
+
+.tableRow {
+  transition: background-color 0.15s ease;
+
+  &:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.searchHighlight {
+  font-weight: 600;
+  padding: 0 2px;
+  border-radius: 4px;
+  background-color: rgba(13, 115, 119, 0.12);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='light'] .searchHighlight {
+  background-color: rgba(13, 148, 136, 0.2);
+  color: rgba(0, 0, 0, 0.95);
+}
+
+.tableEmptyMessage {
+  padding: 32px 16px;
+  color: rgba(0, 0, 0, 0.6);
+  font-style: italic;
+  font-size: 0.9375rem;
+}

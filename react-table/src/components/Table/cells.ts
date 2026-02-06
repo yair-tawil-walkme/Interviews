@@ -1,20 +1,22 @@
+import { COLUMN_ID_NAME, COLUMN_ID_EMAIL, COLUMN_ID_AGE } from '../../constants'
+
 export const cells = [
   {
-    id: 'name',
+    id: COLUMN_ID_NAME,
     numeric: false,
     disablePadding: true,
-    label: 'Name',
+    labelKey: 'columnLabelName',
   },
   {
-    id: 'email',
+    id: COLUMN_ID_EMAIL,
     numeric: true,
     disablePadding: false,
-    label: 'Email',
+    labelKey: 'columnLabelEmail',
   },
   {
-    id: 'age',
+    id: COLUMN_ID_AGE,
     numeric: true,
     disablePadding: false,
-    label: 'Age',
+    labelKey: 'columnLabelAge',
   },
 ]
