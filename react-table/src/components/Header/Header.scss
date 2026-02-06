@@ -1,0 +1,17 @@
+.headerRoot {
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  flex-grow: 1;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+
+  @media (max-width: 599px) {
+    display: none;
+  }
+
+  @media (min-width: 600px) {
+    display: block;
+  }
+}
