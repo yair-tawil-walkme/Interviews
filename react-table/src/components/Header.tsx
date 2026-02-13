@@ -48,7 +48,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+const Header = ({
+  searchText,
+  onSearchTextChange,
+}: {
+  searchText: string
+  onSearchTextChange: (next: string) => void
+}) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +73,12 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              value={searchText}
+              onChange={(e) => onSearchTextChange(e.target.value)}
+            />
           </Search>
         </Toolbar>
       </AppBar>
