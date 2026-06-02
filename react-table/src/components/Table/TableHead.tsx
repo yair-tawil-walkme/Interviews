@@ -1,4 +1,4 @@
-import { MouseEventHandler, MouseEvent } from 'react'
+import { MouseEventHandler, MouseEvent, ChangeEvent } from 'react'
 import MuiTableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
@@ -12,11 +12,8 @@ const TableHead = ({
   order = 'asc',
   orderBy = 'name',
   onRequestSort,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onSelectAllClick,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rowCount,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   numSelected,
 }: {
   order?: 'asc' | 'desc'
@@ -24,7 +21,7 @@ const TableHead = ({
   onRequestSort: (event: MouseEvent, property: string) => void
   rowCount: number
   numSelected: number
-  onSelectAllClick: () => void
+  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
 }) => {
   const createSortHandler =
     (property: string): MouseEventHandler<HTMLButtonElement> =>
@@ -36,7 +33,13 @@ const TableHead = ({
     <MuiTableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox color="primary" />
+          <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all rows' }}
+          />
         </TableCell>
 
         {cells.map((headCell) => (

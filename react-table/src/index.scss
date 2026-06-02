@@ -5,9 +5,29 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #f4f6f8;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 24px 32px;
+}
+
+.users-table {
+  margin-top: 8px;
+
+  .MuiPaper-root {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .MuiTableRow-hover:hover {
+    background-color: rgba(25, 118, 210, 0.04);
+  }
 }

@@ -6,7 +6,12 @@ import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import FilterListIcon from '@mui/icons-material/FilterList'
 
-const TableToolbar = ({ numSelected }: { numSelected: number }) => {
+type TableToolbarProps = {
+  numSelected: number
+  onDeleteClick: () => void
+}
+
+const TableToolbar = ({ numSelected, onDeleteClick }: TableToolbarProps) => {
   return (
     <Toolbar
       sx={{
@@ -43,13 +48,13 @@ const TableToolbar = ({ numSelected }: { numSelected: number }) => {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton aria-label="delete selected rows" onClick={onDeleteClick}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton aria-label="filter list" disabled>
             <FilterListIcon />
           </IconButton>
         </Tooltip>

@@ -4,12 +4,21 @@ import Table from './Table/Table'
 import { getRows } from '../db/rows'
 
 const App = () => {
-  const [rows] = useState(getRows())
+  const [rows, setRows] = useState(getRows())
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const handleDeleteSelected = (selectedKeys: string[]) => {
+    setRows((prev) => prev.filter((row) => !selectedKeys.includes(row.name)))
+  }
 
   return (
-    <div>
-      <Header />
-      <Table rows={rows} />
+    <div className="app-shell">
+      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <Table
+        rows={rows}
+        searchQuery={searchQuery}
+        onDeleteSelected={handleDeleteSelected}
+      />
     </div>
   )
 }
