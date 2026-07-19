@@ -35,7 +35,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -48,7 +47,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const Header = () => {
+type HeaderProps = {
+  searchQuery: string
+  onSearchChange: (query: string) => void
+}
+
+const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,7 +71,12 @@ const Header = () => {
               <SearchIcon />
             </SearchIconWrapper>
 
-            <StyledInputBase placeholder="Search…" />
+            <StyledInputBase
+              placeholder="Search…"
+              value={searchQuery}
+              onChange={(event) => onSearchChange(event.target.value)}
+              inputProps={{ 'aria-label': 'search users' }}
+            />
           </Search>
         </Toolbar>
       </AppBar>
